@@ -1,13 +1,6 @@
-# Ignore all node_modules in any subdirectory
 **/node_modules/
-
-# Ignore environment files
 **/.env
-
-# Ignore build artifacts
 **/dist/
 **/build/
-
-# OS-specific files
 .DS_Store
 Thumbs.db
