@@ -587,32 +587,37 @@ const handleClose = () => {
           </TableCell>
 
           {/* Status Chip */}
-          <TableCell>
+   <TableCell>
   <Chip
-    label={row.status}
-    size="small"
+    label={
+      ['completed', 'paid'].includes(row.status?.toLowerCase())
+        ? 'Completed'
+        : 'Pending'
+    }
     sx={{
+      width: '93px',
+      height: '25px',
+    
+      borderRadius: '10px',
       fontFamily: 'Poppins',
-      fontSize: 12,
       fontWeight: 500,
-      color: '#fff',
-      bgcolor:
-        ['completed', 'paid'].includes(row.status.toLowerCase())
-          ? '#007F5F' // ✅ green for both
-          : row.status.toLowerCase() === 'pending'
-          ? '#A1761C'
-          : '#555',
-      height: 28,
-      width: 100,
-      borderRadius: '8px',
-      textTransform: 'capitalize',
+      fontSize: '12px',
+      lineHeight: '100%',
+      letterSpacing: '0%',
+      textTransform: 'none',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      px: 0,
+      color: ['completed', 'paid'].includes(row.status?.toLowerCase())
+        ? 'rgba(31, 203, 79, 1)'
+        : 'rgba(255, 192, 30, 1)',
+      bgcolor: ['completed', 'paid'].includes(row.status?.toLowerCase())
+        ? 'rgba(31, 203, 79, 0.1)'
+        : 'rgba(255, 192, 30, 0.3)',
     }}
   />
 </TableCell>
+
 
 
         </TableRow>
