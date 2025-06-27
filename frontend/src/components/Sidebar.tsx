@@ -16,7 +16,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import MessageIcon from '@mui/icons-material/Message';
 import PersonIcon from '@mui/icons-material/Person';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-import { NavLink } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const PentaLogo = () => (
   <svg width="27" height="29" viewBox="0 0 27 29" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,6 +37,13 @@ const navItems = [
 ];
 
 const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   return (
     <Box
       component="aside"
@@ -56,14 +64,12 @@ const Sidebar: React.FC = () => {
         boxShadow: '2px 0 5px rgba(0,0,0,0.2)'
       }}
     >
-  
       <Box display="flex" alignItems="center" gap={1.5} mb={4}>
         <PentaLogo />
         <Typography variant="h6" fontWeight="bold">
           Penta
         </Typography>
       </Box>
-
 
       <List sx={{ flexGrow: 1 }}>
         {navItems.map((item) => (
@@ -81,7 +87,6 @@ const Sidebar: React.FC = () => {
               '&.active': {
                 backgroundColor: '#1e1e2f',
                 color:'#1FCB4F'
-
               },
               '&:hover': {
                 backgroundColor: '#2a2d3e',
@@ -89,20 +94,32 @@ const Sidebar: React.FC = () => {
               }
             }}
           >
-            <ListItemIcon sx={{ color: 'white', minWidth: 32, 
-              '&.active': {
-                color:'#1FCB4F'
-
-              },
-              '&:hover': {
-                color:'#1FCB4F'
-              }
-            }}>
+            <ListItemIcon sx={{ color: 'white', minWidth: 32 }}>
               {item.icon}
             </ListItemIcon>
             <ListItemText primary={item.text} />
           </ListItemButton>
         ))}
+
+        <ListItemButton
+          onClick={handleLogout}
+          sx={{
+            mt: 2,
+            px: 2,
+            py: 1.5,
+            borderRadius: 2,
+            color: 'white',
+            '&:hover': {
+              backgroundColor: '#2a2d3e',
+              color: '#1FCB4F'
+            }
+          }}
+        >
+          <ListItemIcon sx={{ color: 'white', minWidth: 32 }}>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItemButton>
       </List>
 
       <Box mt={3}>
