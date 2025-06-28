@@ -23,6 +23,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import { exportTransactionsToCSV } from '../utils/exportCSV';
 import { exportTransactionsToPDF } from '../utils/exportPDF';
 import {Menu} from '@mui/material';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+dayjs.extend(weekOfYear);
 
 
 
@@ -32,6 +34,7 @@ const Dashboard: React.FC = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [dateRange, setDateRange] = useState<DateRange<Dayjs>>([null, null]);
+  const [chartRange, setChartRange] = useState<'monthly' | 'weekly'>('monthly');
 
   useEffect(() => {
     (async () => {
@@ -49,37 +52,74 @@ const filtered = transactions.filter(t => {
     return match && inRange;
   });
 
-  const balance = transactions.reduce((acc, t) => acc + t.amount, 0);
-  const statCards = [
-    { title: 'Balance', icon: <AccountBalanceWalletIcon />, value: balance, color: '#00E676' },
-    { title: 'Revenue', icon: <PaidIcon />, value: balance, color: '#00E676' },
-    { title: 'Expenses', icon: <TrendingUpIcon />, value: balance, color: '#00E676' },
-    { title: 'Savings', icon: <SavingsIcon />, value: balance, color: '#00E676' }
-  ];
+  const income = transactions
+  .filter(t => t.category?.toLowerCase() === 'revenue')
+  .reduce((sum, t) => sum + Number(t.amount), 0);
 
-  const monthlyData = [
-    { month: 'Jan', income: 400, expenses: 200 },
-    { month: 'Feb', income: 900, expenses: 300 },
-    { month: 'Mar', income: 100, expenses: 400 },
-    { month: 'Apr', income: 600, expenses: 250 },
-    { month: 'May', income: 800, expenses: 500 },
-    { month: 'Jun', income: 500, expenses: 350 },
-    { month: 'Jul', income: 224, expenses: 300 },
-    { month: 'Aug', income: 300, expenses: 600 },
-    { month: 'Sep', income: 950, expenses: 200 },
-    { month: 'Oct', income: 400, expenses: 500 },
-    { month: 'Nov', income: 200, expenses: 700 },
-    { month: 'Dec', income: 600, expenses: 800 },
-  ];
-const weeklyData = [
-  { month: 'Week 1', income: 200, expenses: 100 },
-  { month: 'Week 2', income: 450, expenses: 200 },
-  { month: 'Week 3', income: 300, expenses: 180 },
-  { month: 'Week 4', income: 550, expenses: 220 },
+const expenses = transactions
+  .filter(t => t.category?.toLowerCase() === 'expense')
+  .reduce((sum, t) => sum + Number(t.amount), 0);
+
+const balance = income - expenses;
+const savings = income > 0 ? balance : 0;
+
+const statCards = [
+  { title: 'Balance', icon: <AccountBalanceWalletIcon />, value: balance, color: '#00E676' },
+  { title: 'Revenue', icon: <PaidIcon />, value: income, color: '#4caf50' },
+  { title: 'Expenses', icon: <TrendingUpIcon />, value: expenses, color: '#f44336' },
+  { title: 'Savings', icon: <SavingsIcon />, value: savings, color: '#2196f3' }
 ];
 
-const [chartRange, setChartRange] = useState<'monthly' | 'weekly'>('monthly');
-const chartData = chartRange === 'monthly' ? monthlyData : weeklyData;
+ const groupByMonth = () => {
+    const monthlyMap: Record<string, { income: number; expenses: number }> = {};
+    filtered.forEach((t) => {
+      const month = dayjs(t.date).format('MMM');
+      if (!monthlyMap[month]) {
+        monthlyMap[month] = { income: 0, expenses: 0 };
+      }
+      const category = t.category?.toLowerCase();
+      if (category === 'revenue') {
+        monthlyMap[month].income += Number(t.amount);
+      } else if (category === 'expense') {
+        monthlyMap[month].expenses += Number(t.amount);
+      }
+    });
+
+    // Sort months correctly (Jan to Dec)
+    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthOrder
+      .filter(month => monthlyMap[month])
+      .map(month => ({
+        month,
+        ...monthlyMap[month]
+      }));
+  };
+
+  // Group by Week
+  const groupByWeek = () => {
+    const weeklyMap: Record<string, { income: number; expenses: number }> = {};
+    filtered.forEach((t) => {
+      const week = `Week ${dayjs(t.date).week()}`;
+      if (!weeklyMap[week]) {
+        weeklyMap[week] = { income: 0, expenses: 0 };
+      }
+      const category = t.category?.toLowerCase();
+      if (category === 'revenue') {
+        weeklyMap[week].income += Number(t.amount);
+      } else if (category === 'expense') {
+        weeklyMap[week].expenses += Number(t.amount);
+      }
+    });
+
+    return Object.entries(weeklyMap)
+      .sort((a, b) => parseInt(a[0].split(' ')[1]) - parseInt(b[0].split(' ')[1]))
+      .map(([week, data]) => ({
+        month: week,
+        ...data
+      }));
+  };
+
+  const chartData = chartRange === 'monthly' ? groupByMonth() : groupByWeek();
 const [showAllTransactions, setShowAllTransactions] = useState(false);
 
 
@@ -256,96 +296,101 @@ const handleClose = () => {
         ))}
       </Box>
 
-      <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4} mb={4}>
+<Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4} mb={4}>
   {/* Chart Card */}
   <Card sx={{ background: '#1A1C22', flex: 3, borderRadius: 2, p: 2 }}>
-    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-      <Typography
+  <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+    <Typography
+      sx={{
+        color: '#fff',
+        fontFamily: 'Poppins',
+        fontWeight: 600,
+        fontSize: 16,
+      }}
+    >
+      Overview
+    </Typography>
+
+    <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4}>
+      {/* Legend */}
+      <Box display="flex" alignItems="center" gap={2}>
+        <Box display="flex" alignItems="center" gap={1}>
+          <Box width={10} height={10} borderRadius="50%" bgcolor="#00E676" />
+          <Typography sx={{ color: '#bbb', fontSize: 13 }}>Income</Typography>
+        </Box>
+        <Box display="flex" alignItems="center" gap={1}>
+          <Box width={10} height={10} borderRadius="50%" bgcolor="#FF9100" />
+          <Typography sx={{ color: '#bbb', fontSize: 13 }}>Expenses</Typography>
+        </Box>
+      </Box>
+
+      {/* Dropdown */}
+      <Select
+        value={chartRange}
+        onChange={(e) => setChartRange(e.target.value as 'monthly' | 'weekly')}
+        size="small"
+        variant="outlined"
         sx={{
+          bgcolor: '#2B2D3C',
           color: '#fff',
-          fontFamily: 'Poppins',
-          fontWeight: 600,
-          fontSize: 16,
+          fontSize: 13,
+          height: 30,
+          '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+          '& svg': { color: '#fff' },
         }}
       >
-        Overview
-      </Typography>
-
-      <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4} mb={4}>
-        {/* Legend */}
-        <Box display="flex" alignItems="center" gap={2}>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Box width={10} height={10} borderRadius="50%" bgcolor="#00E676" />
-            <Typography sx={{ color: '#bbb', fontSize: 13 }}>Income</Typography>
-          </Box>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Box width={10} height={10} borderRadius="50%" bgcolor="#FF9100" />
-            <Typography sx={{ color: '#bbb', fontSize: 13 }}>Expenses</Typography>
-          </Box>
-        </Box>
-
-        {/* Dropdown */}
-       <Select
-  value={chartRange}
-  onChange={(e) => setChartRange(e.target.value as 'monthly' | 'weekly')}
-  size="small"
-  variant="outlined"
-  sx={{
-    bgcolor: '#2B2D3C',
-    color: '#fff',
-    fontSize: 13,
-    height: 30,
-    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-    '& svg': { color: '#fff' }
-  }}
->
-  <MenuItem value="monthly">Monthly</MenuItem>
-  <MenuItem value="weekly">Weekly</MenuItem>
-</Select>
-      </Box>
+        <MenuItem value="monthly">Monthly</MenuItem>
+        <MenuItem value="weekly">Weekly</MenuItem>
+      </Select>
     </Box>
+  </Box>
 
-    {/* Chart */}
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={chartData}>
-        <XAxis
-          dataKey="month"
-          stroke="#888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-        />
-        <YAxis
-          stroke="#888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          tickFormatter={(val) => `$${val}`}
-        />
-        <CartesianGrid stroke="transparent" />
-        <Tooltip
-          content={<CustomTooltip />}
-          cursor={{ stroke: '#00E676', strokeDasharray: '4 4' }}
-        />
-        <Line
-          type="monotone"
-          dataKey="income"
-          stroke="#00E676"
-          strokeWidth={2.5}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6 }}
-        />
-        <Line
-          type="monotone"
-          dataKey="expenses"
-          stroke="#FF9100"
-          strokeWidth={2.5}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6 }}
-        />
-      </LineChart>
-    </ResponsiveContainer>
-  </Card>
+  {/* Chart */}
+  <ResponsiveContainer width="100%" height={300}>
+    <LineChart
+      data={chartData}
+      margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+    >
+      <CartesianGrid stroke="#333" strokeDasharray="4 4"   vertical={false} />
+      <XAxis
+        dataKey="month"
+        stroke="#888"
+        fontSize={12}
+        tickLine={false}
+        axisLine={false}
+        padding={{ left: 10, right: 10 }}
+      />
+      <YAxis
+        stroke="#888"
+        fontSize={12}
+        tickLine={false}
+        axisLine={false}
+        tickFormatter={(val) => `$${val}`}
+        padding={{ top: 20, bottom: 20 }}
+      />
+      <Tooltip
+        content={<CustomTooltip />}
+        cursor={{ stroke: '#8884d8', strokeDasharray: '4 4' }}
+      />
+      <Line
+        type="monotone"
+        dataKey="income"
+        stroke="#00E676"
+        strokeWidth={2.5}
+        dot={{ r: 4, fill: '#1A1C22', stroke: '#00E676', strokeWidth: 2 }}
+        activeDot={{ r: 6 }}
+      />
+      <Line
+        type="monotone"
+        dataKey="expenses"
+        stroke="#FF9100"
+        strokeWidth={2.5}
+        dot={{ r: 4, fill: '#1A1C22', stroke: '#FF9100', strokeWidth: 2 }}
+        activeDot={{ r: 6 }}
+      />
+    </LineChart>
+  </ResponsiveContainer>
+</Card>
 
   {/* Recent Transactions */}
  <Card
@@ -575,7 +620,7 @@ const handleClose = () => {
           </TableCell>
 
           {/* Amount */}
-          <TableCell
+         <TableCell
   sx={{
     fontFamily: 'Poppins',
     color: row.status?.toLowerCase() === 'pending'
