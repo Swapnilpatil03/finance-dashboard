@@ -576,15 +576,20 @@ const handleClose = () => {
 
           {/* Amount */}
           <TableCell
-            sx={{
-              fontFamily: 'Poppins',
-              color: row.amount >= 0 ? '#00E676' : '#FFB300',
-              fontWeight: 500,
-              fontSize: 14,
-            }}
-          >
-            {row.amount >= 0 ? `+$${row.amount.toFixed(2)}` : `-$${Math.abs(row.amount).toFixed(2)}`}
-          </TableCell>
+  sx={{
+    fontFamily: 'Poppins',
+    color: row.status?.toLowerCase() === 'pending'
+      ? '#FFC01E'
+      : row.amount >= 0
+      ? '#00E676'
+      : '#FF3D00',
+    fontWeight: 500,
+    fontSize: 14,
+  }}
+>
+  {row.amount >= 0 ? `+$${row.amount.toFixed(2)}` : `-$${Math.abs(row.amount).toFixed(2)}`}
+</TableCell>
+
 
           {/* Status Chip */}
    <TableCell>
