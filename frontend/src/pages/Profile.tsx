@@ -19,7 +19,7 @@ const Profile: React.FC = () => {
   try {
     console.log("📡 Fetching profile...");
 
-    const res = await axios.get('http://localhost:5000/user/profile', {
+    const res = await axios.get('https://finance-dashboard-zdik.onrender.com/user/profile', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
 
@@ -50,7 +50,7 @@ const handleSaveChanges = async () => {
   try {
     console.log('📤 Sending to /user/profile:', editUser);
 
-    const res = await axios.put('http://localhost:5000/user/profile', editUser, {
+    const res = await axios.put('https://finance-dashboard-zdik.onrender.com/user/profile', editUser, {
   headers: {
     Authorization: `Bearer ${localStorage.getItem('token')}`
   }
@@ -72,7 +72,7 @@ const handleSaveChanges = async () => {
     }
 
     try {
-      await axios.put('http://localhost:5000/user/update-password', passwords, {
+      await axios.put('https://finance-dashboard-zdik.onrender.com/user/update-password', passwords, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       alert('Password updated');
