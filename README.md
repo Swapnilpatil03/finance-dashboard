@@ -6,6 +6,9 @@ A full-stack web application that provides users with detailed financial analyti
 
 - **Frontend**: [https://finance-dashboard-frontend-9gsr.onrender.com](https://finance-dashboard-frontend-9gsr.onrender.com)
 - **Backend API**: [https://finance-dashboard-zdik.onrender.com](https://finance-dashboard-zdik.onrender.com)
+![image](https://github.com/user-attachments/assets/0db973ab-fde4-4b42-a369-952dd36e9072)
+![image](https://github.com/user-attachments/assets/0519fb0a-73c0-46e7-9a8c-74b5d35d19a1)
+![image](https://github.com/user-attachments/assets/a3b9c464-5531-4b08-a082-3301628aac8d)
 
 ---
 
