@@ -7,7 +7,12 @@ interface DecodedToken {
   exp: number;
 }
 
-export const protect = (req: Request, res: Response, next: NextFunction): void => {
+// Extend Express Request to include `userId`
+export interface AuthRequest extends Request {
+  userId?: string;
+}
+
+export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -22,9 +27,9 @@ export const protect = (req: Request, res: Response, next: NextFunction): void =
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
 
     console.log('🛡️ Token decoded:', decoded);
-
-    // Attach user info to request object for later use
-    (req as any).user = decoded;
+(req as any).userId = decoded.userId;
+    // Attach userId to the request object
+   
 
     next();
   } catch (error: any) {

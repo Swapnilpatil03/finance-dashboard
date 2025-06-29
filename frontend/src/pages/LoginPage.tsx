@@ -4,7 +4,7 @@ import {
   Box, Button, TextField, Typography, Container, Alert
 } from '@mui/material';
 import { login } from '../services/auth';
-
+import { Link } from 'react-router-dom';
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,6 +50,9 @@ const LoginPage: React.FC = () => {
           Login
         </Button>
       </Box>
+      <Typography variant="body2" mt={2}>
+  Don’t have an account? <Link to="/register">Register</Link>
+</Typography>
     </Container>
   );
 };

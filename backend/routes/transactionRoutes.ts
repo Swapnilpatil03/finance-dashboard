@@ -1,11 +1,12 @@
 import express from 'express';
 import Transaction from '../models/Transaction';
-import { protect } from '../middleware/authMiddleware';
+import { authMiddleware } from '../middleware/authMiddleware';
+
 
 const router = express.Router();
 
 // Get all transactions (no filters for now)
-router.get('/', protect, async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   try {
   const transactions = await Transaction.find();
   console.log('📦 Transactions fetched from DB:', transactions); // Add this line

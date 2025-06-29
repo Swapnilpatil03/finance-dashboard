@@ -1,30 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Box, Typography, Avatar, Card, CardContent, Divider, TextField, Button, InputAdornment
+  Box, Typography, Avatar, Card, CardContent, Divider,
+  TextField, Button, InputAdornment, CircularProgress
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import HistoryIcon from '@mui/icons-material/History';
+import axios from 'axios';
 
 const Profile: React.FC = () => {
-  const [user, setUser] = useState({
-    id: 'user_001',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    joinDate: '2024-01-01',
-    avatar: 'https://thispersondoesnotexist.com/',
-    totalTransactions: 300,
-    income: 546408.25,
-    expenses: 128000.75
-  });
+  const [user, setUser] = useState<any>(null);
+  const [editUser, setEditUser] = useState<any>(null);
+  const [passwords, setPasswords] = useState({ old: '', new: '', confirm: '' });
+  const [loading, setLoading] = useState(true);
 
-  const [editUser, setEditUser] = useState({ ...user });
-  const [passwords, setPasswords] = useState({
-    old: '',
-    new: '',
-    confirm: ''
-  });
+ const fetchProfile = async () => {
+  try {
+    console.log("📡 Fetching profile...");
+
+    const res = await axios.get('http://localhost:5000/user/profile', {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+
+    console.log("✅ Fetched profile data:", res.data);
+
+    setUser(res.data);
+    setEditUser(res.data);
+  } catch (err: any) {
+    console.error('❌ Failed to fetch profile:', err.response?.data || err.message);
+  } finally {
+    setLoading(false); // ⬅️ CRUCIAL: Ensure this runs even on error
+  }
+};
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const handleProfileChange = (field: string, value: string) => {
     setEditUser({ ...editUser, [field]: value });
@@ -34,12 +46,50 @@ const Profile: React.FC = () => {
     setPasswords({ ...passwords, [field]: value });
   };
 
+const handleSaveChanges = async () => {
+  try {
+    console.log('📤 Sending to /user/profile:', editUser);
+
+    const res = await axios.put('http://localhost:5000/user/profile', editUser, {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('token')}`
+  }
+});
+
+    setUser(res.data);
+    alert('Profile updated successfully');
+  } catch (err: any) {
+    console.error('❌ Update failed:', err.response?.data || err.message);
+    alert(`Failed to update profile: ${err.response?.data?.message || 'Unknown error'}`);
+  }
+};
+
+
+  const handlePasswordUpdate = async () => {
+    if (passwords.new !== passwords.confirm) {
+      alert("Passwords don't match");
+      return;
+    }
+
+    try {
+      await axios.put('http://localhost:5000/user/update-password', passwords, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      alert('Password updated');
+      setPasswords({ old: '', new: '', confirm: '' });
+    } catch (err) {
+      console.error('Password update failed:', err);
+      alert('Failed to update password');
+    }
+  };
+
+  if (loading || !editUser) return <Box p={4}><CircularProgress /></Box>;
+
   return (
     <Box p={4} sx={{ bgcolor: '#1A1C22', color: 'white', minHeight: '100vh' }}>
       <Typography variant="h5" fontWeight={600} mb={3}>Profile</Typography>
 
       <Card sx={{ bgcolor: '#1E1E2F', p: 3, borderRadius: 2, mb: 4 }}>
-        {/* Profile Overview */}
         <Box display="flex" alignItems="center" gap={3} flexWrap="wrap">
           <Avatar src={editUser.avatar} sx={{ width: 80, height: 80 }} />
           <Box>
@@ -52,7 +102,6 @@ const Profile: React.FC = () => {
 
         <Divider sx={{ my: 3, bgcolor: '#2B2D3C' }} />
 
-        {/* Edit Form */}
         <Typography fontWeight={500} mb={2}>Edit Profile</Typography>
         <Box display="flex" gap={2} flexWrap="wrap">
           <TextField
@@ -78,13 +127,12 @@ const Profile: React.FC = () => {
             fullWidth
             sx={{ bgcolor: '#2B2D3C', borderRadius: 1, input: { color: '#fff' } }}
           />
-          <Button variant="contained" color="success" sx={{ mt: 2, alignSelf: 'flex-start' }}>
+          <Button variant="contained" color="success" sx={{ mt: 2, alignSelf: 'flex-start' }} onClick={handleSaveChanges}>
             Save Changes
           </Button>
         </Box>
       </Card>
 
-      {/* Password Update Section */}
       <Card sx={{ bgcolor: '#1E1E2F', p: 3, borderRadius: 2, mb: 4 }}>
         <Typography fontWeight={500} mb={2}>Change Password</Typography>
         <Box display="flex" gap={2} flexWrap="wrap">
@@ -113,13 +161,12 @@ const Profile: React.FC = () => {
             fullWidth
             sx={{ bgcolor: '#2B2D3C', borderRadius: 1, input: { color: '#fff' } }}
           />
-          <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+          <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handlePasswordUpdate}>
             Update Password
           </Button>
         </Box>
       </Card>
 
-      {/* Activity History */}
       <Card sx={{ bgcolor: '#1E1E2F', p: 3, borderRadius: 2 }}>
         <Typography fontWeight={500} mb={2}><HistoryIcon sx={{ mr: 1 }} />Activity History</Typography>
         <Box pl={1}>

@@ -24,6 +24,8 @@ import { exportTransactionsToCSV } from '../utils/exportCSV';
 import { exportTransactionsToPDF } from '../utils/exportPDF';
 import {Menu} from '@mui/material';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import { Link } from 'react-router-dom';
+
 dayjs.extend(weekOfYear);
 
 
@@ -228,30 +230,36 @@ const handleClose = () => {
       <SearchIcon sx={{ color: '#888', fontSize: 20, mr: 1 }} />
             <InputBase
               placeholder="Search..."
+              
               sx={{ color: '#fff', fontSize: '13px', flex: 1 }}
             />
           </Box>
 
     {/* Bell Icon */}
-    <Box
-            sx={{
-              width: 36,
-              height: 36,
-              backgroundColor: '#1F222A',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-      <i className="fas fa-bell" style={{ color: '#fff', fontSize: '16px' }}></i>
-    </Box>
+  <Link to="/messages" style={{ textDecoration: 'none' }}>
+  <Box
+    sx={{
+      width: 36,
+      height: 36,
+      backgroundColor: '#1F222A',
+      borderRadius: '8px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer'
+    }}
+  >
+    <i className="fas fa-bell" style={{ color: '#fff', fontSize: '16px' }}></i>
+  </Box>
+</Link>
 
     {/* Avatar */}
-    <Avatar
-            src="https://thispersondoesnotexist.com/"
-            sx={{ width: 36, height: 36 }}
-          />
+    <Link to="/profile">
+  <Avatar
+    src="https://thispersondoesnotexist.com/"
+    sx={{ width: 36, height: 36, cursor: 'pointer' }}
+  />
+</Link>
   </Box>
 </Box>
 

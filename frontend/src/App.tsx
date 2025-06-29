@@ -8,8 +8,10 @@ import Transactions from './pages/Transactions';
 import Wallet from './pages/Wallet';
 import Analytics from './pages/Analytics';
 import Profile from './pages/Profile';
-// import Messages from './pages/Messages';
-// import Settings from './pages/Settings';
+import Messages from './pages/Messages'; // Add this at the top
+import Settings from './pages/Setting';
+// import RegisterPage from './pages/RegisterPage';
+
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -33,14 +35,16 @@ const App: React.FC = () => {
       <Layout>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          {/* <Route path="/register" element={<RegisterPage />} /> */}
+
           <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/transactions" element={<PrivateRoute element={<Transactions />} />} />
           <Route path="/wallet" element={<PrivateRoute element={<Wallet />} />} />
           <Route path="/analytics" element={<PrivateRoute element={<Analytics />} />} />
           <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
-          {/* <Route path="/messages" element={<PrivateRoute element={<Messages />} />} />
-          <Route path="/settings" element={<PrivateRoute element={<Settings />} />} /> */}
+       <Route path="/messages" element={<PrivateRoute element={<Messages />} />} />
+        <Route path="/settings" element={<PrivateRoute element={<Settings />} />} /> 
         </Routes>
       </Layout>
     </Router>

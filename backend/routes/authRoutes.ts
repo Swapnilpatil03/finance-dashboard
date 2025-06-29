@@ -10,7 +10,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
-    if (!user) {
+    if (!user || !user.password) {
       res.status(400).json({ message: 'Invalid credentials' });
       return;
     }
@@ -21,11 +21,17 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '1d' }
+    );
+
     res.status(200).json({ token });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 export default router;
