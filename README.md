@@ -1,69 +1,163 @@
-# 💰 Finance Dashboard
+# 💼 Finance Dashboard
 
-A full-stack web application that provides users with detailed financial analytics, wallet tracking, transaction history, messaging, and profile management.
+A modern full-stack finance management platform designed to visualize financial analytics, monitor wallet activity, manage transactions, communicate via internal messaging, and soon — handle emails directly from the dashboard.
 
-## 🚀 Live Demo
+---
 
-- **Frontend**: [https://finance-dashboard-frontend-9gsr.onrender.com](https://finance-dashboard-frontend-9gsr.onrender.com)
-- **Backend API**: [https://finance-dashboard-zdik.onrender.com](https://finance-dashboard-zdik.onrender.com)
-![image](https://github.com/user-attachments/assets/0db973ab-fde4-4b42-a369-952dd36e9072)
-![image](https://github.com/user-attachments/assets/0519fb0a-73c0-46e7-9a8c-74b5d35d19a1)
-![image](https://github.com/user-attachments/assets/a3b9c464-5531-4b08-a082-3301628aac8d)
+## 🔗 Live URLs
+
+- 🔹 **Frontend**: [https://finance-dashboard-frontend-9gsr.onrender.com](https://finance-dashboard-frontend-9gsr.onrender.com)
+- 🔹 **Backend**: [https://finance-dashboard-zdik.onrender.com](https://finance-dashboard-zdik.onrender.com)
+
+> 🧪 **Admin Login**
+>
+> - **Email**: `admin@example`  
+> - **Password**: `admin123`
+
+---
+
+## 🎥 Preview
+
+[▶️ Click to Watch Demo Video](https://www.loom.com/share/your-demo-video-id)
 
 ---
 
 ## 🧰 Tech Stack
 
-### Frontend
-- React + TypeScript
-- Material UI (MUI)
-- Recharts
-- Day.js
-
-### Backend
-- Node.js + Express
-- TypeScript
-- MongoDB + Mongoose
-- JSON Web Token (JWT) for authentication
-- bcryptjs for password hashing
+| Layer     | Technology                              |
+|-----------|------------------------------------------|
+| Frontend  | React, TypeScript, MUI (Material UI)     |
+| Backend   | Node.js, Express, TypeScript             |
+| Database  | MongoDB, Mongoose                        |
+| Auth      | JWT (Token-based Authentication)         |
+| Styling   | MUI + Custom CSS                         |
+| Charts    | Recharts                                 |
+| Date Utils| Day.js                                   |
 
 ---
 
-## 📂 Features
+## ✨ Key Features
 
-### 🔒 Authentication
-- User Registration and Login
-- JWT-based token authentication
+### 🔐 Authentication
+- User registration & login
+- JWT-based session handling
+- Admin role support
 
 ### 📊 Dashboard
-- Revenue, Expense, Savings, and Balance visualization
-- Dynamic charts (monthly/weekly view)
-- Transaction filters, export (CSV/PDF), and recent activity
+- Real-time summary: **Balance**, **Revenue**, **Expenses**, and **Savings**
+- Dynamic chart switching (monthly/weekly)
+- Recent transaction highlights
 
 ### 💼 Wallet
-- Income and Expense summary
-- Transaction table with dynamic avatars
+- Breakdown of income & expenses
+- Latest activity feed
+- Color-coded entries
+
+### 📁 Transactions
+- Filterable by date, search, and status
+- Export options: **CSV** & **PDF**
+- Dynamic amount coloring
 
 ### 👤 Profile
-- Editable user details
-- Avatar customization
-- Password update
-- Activity history
+- View & update user information
+- Change avatar
+- Password change
+- Activity log
 
 ### 💬 Messages
-- Real-time chat UI
-- Individual conversation per user (WhatsApp-style)
+- Direct internal messaging
+- One-to-one chats (WhatsApp/Telegram style)
+- Smart scroll, preview snippets, timestamp
+
+### 📧 Mail (Under Development)
+- **Objective**: Admin can log in to their Gmail inbox, read & reply directly from the dashboard.
+- Gmail API integration using OAuth2
+- Real-time interface similar to a messenger
+- Smart inbox design
 
 ---
-### Postman Collection link
-https://gist.github.com/Swapnilpatil03/9772e7ce9f78af14e26b728527029041
+
 ## 🛠️ Local Setup
 
-### 1. Clone the Repository
+### Prerequisites
+- Node.js ≥ 18.x
+- MongoDB local or cloud (e.g., Atlas)
+
+### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/your-username/finance-dashboard.git
-cd finance-dashboard
+git clone https://github.com/Swapnilpatil03/finance-dashboard.git
+````
 
+### Step 2: Backend Setup 
+
+```` bash
+cd backend
+npm install
+````
+
+### Step 3: Frontend Setup
+
+```` bash
+cd frontend
+npm install
+````
+
+### Step 4: Start Server
+
+````bash
+npm run dev
+# Runs on http://localhost:5000
+````
+
+### Step 5: Start Development Server(Frontend)
+````bash
+npm start
+# Runs on http://localhost:3000
+````
+
+
+### Postman Collection
+https://gist.github.com/Swapnilpatil03/9772e7ce9f78af14e26b728527029041
+
+
+## 📬 Gmail Mail Integration (Coming Soon...)
+
+We're building a new **Mail** page that allows the admin to log into Gmail and interact with emails just like a chat app (think WhatsApp or Telegram). This feature will make it easier for admins to view and reply to emails in a conversational, threaded interface — all from within the dashboard.
+
+---
+
+### ✅ What's Done:
+
+- ✅ UI design for threaded chat experience  
+- ✅ Placeholder component for Gmail authentication flow (OAuth2)
+
+---
+
+### 🔧 In Progress:
+
+- 🔄 Gmail OAuth2 integration using Google APIs  
+- 📥 Fetching inbox and parsing messages via Gmail REST API  
+- 📤 Sending replies directly from the dashboard  
+- 🔁 Smart thread-based conversation mapping (like chat apps)
+
+---
+
+### 🔒 Authentication Flow (Planned):
+
+1. Admin clicks **"Login with Gmail"**
+2. Redirect to Google OAuth2 consent screen
+3. On success, access token is stored securely
+4. Token used to interact with Gmail API (read/send)
+
+---
+
+### 💡 Goal:
+
+Create a smooth, chat-like email experience where the admin never needs to leave the dashboard to manage conversations.
+
+> 🚧 *This feature is under active development and will be rolled out in upcoming releases. Stay tuned!*
+
+---
 
 
