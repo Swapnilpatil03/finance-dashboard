@@ -9,6 +9,7 @@ A modern full-stack finance management platform designed to visualize financial 
 - 🔹 **Frontend**: [https://finance-dashboard-frontend-9gsr.onrender.com](https://finance-dashboard-frontend-9gsr.onrender.com)
 - 🔹 **Backend**: [https://finance-dashboard-zdik.onrender.com](https://finance-dashboard-zdik.onrender.com)
 - *** It might get some time to login due to free tier of Render, in premium version it wont lag , but once the login is done and dashboard gets open then all things will work fine ***
+- Just wait some time to login
 
 > 🧪 **Admin Login**
 >
