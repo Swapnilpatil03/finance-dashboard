@@ -17,8 +17,10 @@ A modern full-stack finance management platform designed to visualize financial 
 ---
 
 ## 🎥 Preview
+📽️ [Watch Demo Video](https://drive.google.com/file/d/FILE_ID/view)
 
-[▶️ Click to Watch Demo Video](https://www.loom.com/share/your-demo-video-id)
+
+
 
 ---
 
