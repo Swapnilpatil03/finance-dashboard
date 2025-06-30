@@ -18,7 +18,8 @@ A modern full-stack finance management platform designed to visualize financial 
 
 ## 🎥 Preview
 ## 📽️ Demo Video
-[Click to Watch the Demo](https://github.com/Swapnilpatil03/finance-dashboard/releases/download/v1.0.0/React%20App%20-%20Google%20Chrome%202025-06-30%2000-01-21.mp4)
+[Click to Watch the Demo](https://github.com/Swapnilpatil03/finance-dashboard/releases/download/v1.0.0/React.App.-.Google.Chrome.2025-06-30.00-01-21.mp4)
+
 
 
 
